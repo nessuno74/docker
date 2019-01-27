@@ -6,7 +6,30 @@ services:
       - "80:80"
     links:
       - "redmine:redmine"
+    volumes:
+      - "/Users/nessuno74/dockerfiles/webapp/nginx-conf:/etc/nginx/conf.d"
+
+
   redmine:
     image: redmine:4.0.1
-    expose:
-      - "3000"
+    volumes:
+      - /Users/nessuno74/dockerfiles/webapp/redmine-files:/usr/src/redmine/files
+      - /Users/nessuno74/dockerfiles/webapp/redmine-log:/usr/src/redmine/log
+    environment:
+      - REDMINE_DB_MYSQL=mysql
+      - REDMINE_DB_USERNAME=redmine
+      - REDMINE_DB_PASSWORD=redmine
+      - REDMINE_DB_DATABASE=redmine
+    links:
+      - mysql:mysql
+
+  mysql:
+    image: mysql:5.7
+    volumes:
+    - "/Users/nessuno74/dockerfiles/webapp/mysql-data:/var/lib/mysql" 
+    environment:
+      MYSQL_DATABASE: "redmine"
+      MYSQL_USER: "redmine"
+      MYSQL_PASSWORD: "redmine"
+      MYSQL_ROOT_PASSWORD: "root"
+      MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
